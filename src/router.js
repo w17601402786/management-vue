@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from './components/Login.vue'
+
+
 // 管理员页面
 import Home_admin from './components/admin/Home.vue'
 import Welcome_admin from './components/admin/Welcome.vue'
@@ -22,6 +24,7 @@ import Welcome_student from './components/student/Welcome.vue'
 import Courses_Info from './components/student/Courses.vue'
 import Select from './components/student/Select.vue'
 import Analysis from './components/student/Analysis.vue'
+import Info from './components/student/Info.vue'
 
 
 // 教师页面
@@ -70,6 +73,7 @@ const router = new Router({
         { path: '/student/courses', component: Courses_Info },
         { path: '/student/select', component: Select },
         { path: '/student/Analysis', component: Analysis },
+        { path: '/student/Info', component: Info },
       ]
     },
     {
@@ -94,7 +98,7 @@ router.beforeEach((to, from, next) => {
   // next:放行函数 next()放行  next('/login') 强制跳转
   if (to.path === '/login') return next();
   // 获取token
-  const tokenStr = window.sessionStorage.getItem('token');
+  const tokenStr = window.sessionStorage.getItem('user');
   if (!tokenStr) return next('/login');
   next()
 })

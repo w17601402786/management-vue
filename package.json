@@ -7,10 +7,15 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
+    "@popperjs/core": "^2.11.7",
+    "@splinetool/runtime": "^0.9.343",
+    "bootstrap": "^5.2.3",
     "core-js": "^2.6.5",
     "echarts": "^5.1.1",
-    "element-ui": "^2.4.5",
+    "element-ui": "^2.15.13",
     "html2canvas": "^1.0.0-rc.7",
+    "jquery": "^3.7.0",
     "print-js": "^1.6.0",
     "vue": "^2.6.10",
     "vue-pdf": "^4.2.0",

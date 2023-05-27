@@ -3,8 +3,7 @@
     <!-- 头部区域-->
     <el-header>
       <div>
-        <img src="../../assets/system.png" alt="" />
-        <span>上海大学教务管理系统学生端</span>
+        <span>教务管理系统学生端</span>
       </div>
       <el-button type="info" @click="logout">退出</el-button>
     </el-header>
@@ -12,7 +11,7 @@
     <el-container>
       <!-- 侧边栏 -->
       <el-aside :width="isCollapse ? '64px' : '200px'">
-        <div class="toggle-button" @click="toggleCollapse">|||</div>
+        <div class="toggle-button" @click="toggleCollapse"></div>
         <el-menu
           background-color="#2b4b6b"
           text-color="#fff"
@@ -61,23 +60,28 @@ export default {
         },
         {
           id: 1,
+          authName: '个人信息',
+          path: 'student/info',
+        },
+        {
+          id: 2,
           authName: '课程信息',
           path: 'student/courses',
         },
         {
-          id: 2,
+          id: 3,
           authName: '选课信息',
           path: 'student/select',
         },
         {
-          id: 3,
+          id: 4,
           authName: '成绩分析',
           path: 'student/Analysis',
         },
       ],
       // 菜单图标
       iconsObj: {
-        0: 'el-icon-s-custom',
+        0: 'el-icon-s-home',
         1: 'el-icon-s-custom',
         2: 'el-icon-s-promotion',
         3: 'el-icon-s-goods',

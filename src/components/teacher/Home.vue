@@ -3,8 +3,7 @@
     <!-- 头部区域 -->
     <el-header>
       <div>
-        <img src="../../assets/logo_Shu.png" alt="" />
-        <span>上海大学教务管理系统教师端</span>
+        <span>教务管理系统教师端</span>
       </div>
       <el-button type="info" @click="logout">退出</el-button>
     </el-header>
@@ -12,44 +11,30 @@
     <el-container>
       <!-- 侧边栏 -->
       <el-aside :width="isCollapse ? '64px' : '200px'">
-        <div class="toggle-button" @click="toggleCollapse">|||</div>
+        <div class="toggle-button" @click="toggleCollapse"></div>
         <el-menu
-          background-color="#043454"
+          background-color="#2b4b6b"
           text-color="#fff"
-          unique-opened
           :collapse="isCollapse"
           :collapse-transition="false"
           router
           :default-active="activePath"
-          active-text-color="#409BFF"
-                 >
+        >
           <!-- 一级菜单 -->
-          <el-submenu
-            :index="item.id + ''"
+          <el-menu-item
+            :index="'/' + item.path"
             v-for="item in menuList"
             :key="item.id"
+            @click="saveNavState('/' + item.path)"
           >
             <!-- 一级菜单模板 -->
             <template slot="title">
               <!-- 图标 -->
-              <i class="el-icon-setting"></i>
+              <i :class="iconsObj[item.id]"></i>
               <!-- 文本 -->
               <span>{{ item.authName }}</span>
             </template>
-
-            <!-- 二级菜单 -->
-            <el-menu-item
-              :index="'/teacher/'+subItem.path"
-              v-for="subItem in item.children"
-              :key="subItem.id" 
-              @click ="saveNavState('/teacher/'+subItem.path)"
-            >
-              <template slot="title">
-                <i class="el-icon-menu"></i>
-                <span>{{ subItem.authName }}</span>
-              </template>    
-            </el-menu-item>
-          </el-submenu>
+          </el-menu-item>
         </el-menu>
       </el-aside>
       <!-- 右侧主体 -->
@@ -69,73 +54,32 @@ export default {
       // 左侧菜单数据
         menuList: [
             {
-                //id: 1,
-                authName: '教学相关',
-                path: '',
-                children: [
-                    {
-                        //id: 2,
-                        authName: '课程教学大纲',
-                        path: 'teachingschedule/',
-                        
-                    },
-                    {
-                      //  id: 2,
-                        authName: '学生名单',
-                        path: 'dictionary/',
-                        children: [
-                        ],
-                    },
-                    {
-                       // id: 2,
-                        authName: '成绩录入',
-                        path: 'grade/',
-                        children: [
-                        ],
-                    },
-                    {
-                       // id: 2,
-                        authName: '课程班级成绩查询',
-                        path: 'select/',
-                        children: [
-                        ],
-                    },
-                   /* {
-                       // id: 2,
-                        authName: '教学情况总结表',
-                        path: null,
-                        children: [
-                        ],
-                    },*/
-
-                ],
+              id: 0,
+              authName: '首页',
+              path: 'teacher/home',
             },
-           /* {
-               // id: 3,
-                authName: '教学质量评估',
-                path: '',
-                children: [
-                    {
-                        //id: 2,
-                        authName: '课堂教学质量评估',
-                        path: '',
-
-                    },
-                    {
-                       // id: 2,
-                        authName:'历史授课清单及评教',
-                        path: '',
-                        children: [
-                        ],
-                    },
-
-                ],
-            },*/
+            {
+              id: 1,
+              authName: '教师信息',
+              path: 'teacher/info',
+            },
+            {
+              id: 2,
+              authName: '教师课表',
+              path: 'teacher/teachingschedule',
+            },
+            {
+              id: 3,
+              authName: '授课班成绩',
+              path: 'teacher/score',
+            }
+            
 
       ],
       // 菜单图标
       iconsObj: {
-        1: 'el-icon-menu',
+        0: 'el-icon-s-home',
+        1: 'el-icon-user',
         2: 'el-icon-date',
         3: 'el-icon-reading',
         4: 'el-icon-s-order',

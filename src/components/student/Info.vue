@@ -1,4 +1,6 @@
 <template>
+
+<el-card class="box-card">
     <div v-if="studentInfo">
         <el-descriptions class="margin-top" title="学生信息" :column="3" border>
             <el-descriptions-item>
@@ -38,13 +40,6 @@
             </el-descriptions-item>
             <el-descriptions-item>
                 <template slot="label">
-                    <i class="el-icon-office-building"></i>
-                    班级
-                </template>
-                {{ studentInfo.classes.name }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-                <template slot="label">
                     <i class="el-icon-location-outline"></i>
                     地址
                 </template>
@@ -65,52 +60,52 @@
                 <el-tag size="small">{{ studentInfo.note }}</el-tag>
             </el-descriptions-item>
         </el-descriptions>
-        <el-descriptions class="margin-top" title="班级信息" column="2" border>
+        <el-descriptions class="margin-top" title="班级信息" :column="2" border>
             <el-descriptions-item>
                 <template slot="label">
-                    <i class="el-icon-tickets"></i>
-                
+                    <i class="el-icon-info"></i>
                     班级号
                 </template>
                 {{ studentInfo.classes.classId }}
             </el-descriptions-item>
             <el-descriptions-item>
                 <template slot="label">
-                    <i class="el-icon-tickets"></i>
+                    <i class="el-icon-office-building"></i>
                     班级名称
                 </template>
                 {{ studentInfo.classes.name }}
             </el-descriptions-item>
             <el-descriptions-item>
                 <template slot="label">
-                    <i class="el-icon-tickets"></i>
+                    <i class="el-icon-s-cooperation"></i>
                     班级专业
                 </template>
                 {{ studentInfo.classes.major }}
             </el-descriptions-item>
             <el-descriptions-item>
                 <template slot="label">
-                    <i class="el-icon-tickets"></i>
+                    <i class="el-icon-user-solid"></i>
                     班级人数
                 </template>
                 {{ studentInfo.classes.num }}
             </el-descriptions-item>
             <el-descriptions-item>
                 <template slot="label">
-                    <i class="el-icon-tickets"></i>
+                    <i class="el-icon-s-claim"></i>
                     年级
                 </template>
                 {{ studentInfo.classes.year }}
             </el-descriptions-item>
             <el-descriptions-item>
                 <template slot="label">
-                    <i class="el-icon-tickets"></i>
+                    <i class="el-icon-s-custom"></i>
                     辅导员
                 </template>
                 {{ studentInfo.classes.counsellor }}
             </el-descriptions-item>
         </el-descriptions>
     </div>
+    </el-card>
 </template>
 
 <script>
@@ -124,7 +119,7 @@ export default {
     },
     mounted() {
         axios
-            .get("http://localhost:8081/student/info")
+            .get("/student/info")
             .then((response) => {
                 this.studentInfo = response.data.data.studentInfo;
             })

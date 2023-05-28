@@ -1,204 +1,206 @@
 <template>
   <div>
-    <!-- 导航-->
-    <el-breadcrumb separator="/">
-      <el-breadcrumb-item :to="{ path: '/teacher/welcome' }"
-        >首页</el-breadcrumb-item
-      >
-      <el-breadcrumb-item>教学相关</el-breadcrumb-item>
-      <el-breadcrumb-item>课程教学大纲</el-breadcrumb-item>
-    </el-breadcrumb>
-    <el-card>
-      <!-- 搜索与添加区域 v-model提供数据绑定功能-->
-      <el-row :gutter="20">
-        <el-col :span="16">
-          <el-input
-            :placeholder="'请输入' + selected"
-            prefix-icon="el-icon-search"
-            v-model="input"
-            clearable
-            @clear="getcourseName"
-          >
-            <el-select
-              v-model="selected"
-              slot="prepend"
-              placeholder="请选择"
-              class="select"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-            <el-button @click="getcourseName" slot="append"> 搜索 </el-button>
-          </el-input>
-        </el-col>
-      </el-row>
-      <!--课程列表区域-->
-      <el-table :data="courselistShow" border stripe>
-        <el-table-column type="index"></el-table-column>
-        <el-table-column
-          label="课程号"
-          prop="course.course_id"
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          label="课程名称"
-          prop="course.course_name"
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          label="教师号"
-          prop="teacher.user.user_id"
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          label="教师名"
-          prop="teacher.user.user_name"
-          align="center"
-        ></el-table-column>
-        <!--通过作用域插槽-->
-        <el-table-column label="编辑" align="center">
-          <template>
-            <!--上传按钮-->
-            <el-upload
-              class="upload-teachingschedule"
-              action="http://127.0.0.1:8001/teacher/save_pdf/"
-              :on-preview="handlePreview"
-              :on-remove="handleRemove"
-              :before-remove="beforeRemove"
-              multiple
-              :limit="3"
-              :on-exceed="handleExceed"
-            >
-              <el-button slot="trigger" size="mini" type="text"
-                >点击此处上传教学大纲</el-button
-              >
-            </el-upload>
-            <!--修改按钮
-    <el-button type="primary" icon="el-icon-edit" size="mini">修改</el-button>
-    删除按钮
-                        <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>-->
+
+    <el-card class="box-card">
+    <div class="current-week">
+      <h1>当前第{{ week }}周</h1>
+    </div>
+    <el-table 
+      :span-method="arraySpanMethod"
+      :data="tableData" 
+      style="width: 100%"
+      border>
+      <el-table-column prop="time" label="节次"></el-table-column>
+      <el-table-column v-for="day in 7" :key="day" :label=" dayList[day%7]" >
+        <template slot-scope="{ row }">
+          <template v-if="row[day]">
+            <el-card class="course-card" :style="{ backgroundColor: getRandomColor() }">
+              <div class="course-name" :style="{ color: getFontColor()}">{{ row[day].courseInfo.name }}</div>
+                <div class="course-info">
+                  <div class="teacher">{{ row[day].teacher.name }}</div>
+                  <div class="location">{{ row[day].location }}</div>
+                </div>  
+            </el-card>
           </template>
-        </el-table-column>
-      </el-table>
-      <!--页码栏-->
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[1, 2, 3, 5]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      >
-      </el-pagination>
+        </template>
+      </el-table-column>
+    </el-table>
     </el-card>
   </div>
 </template>
-
 <script>
+import axios from 'axios';
+
+
+// 生成随机字体颜色
+function getRandomFontColor(bgColor) {
+      // 将背景颜色转换为 RGB 格式
+      let rgb = bgColor.match(/\d+/g);
+      let r = parseInt(rgb[0]);
+      let g = parseInt(rgb[1]);
+      let b = parseInt(rgb[2]);
+      // 根据亮度计算字体颜色
+      let brightness = (r * 299 + g * 587 + b * 114) / 1000;
+      return brightness >= 128 ? '#000' : '#fff';
+}
+
 export default {
   data() {
     return {
-      options: [
-        {
-          value: '课程号',
-          label: '课程号',
-        },
-        {
-          value: '学期',
-          label: '学期',
-        },
-        {
-          value: '教师号',
-          label: '教师号',
-        },
+      colors: [
+        { backgroundColor: '#f56a00', fontColor: getRandomFontColor('#f56a00') },
+        { backgroundColor: '#7265e6', fontColor: getRandomFontColor('#7265e6') },
+        { backgroundColor: '#ffbf00', fontColor: getRandomFontColor('#ffbf00') },
+        { backgroundColor: '#00a2ae', fontColor: getRandomFontColor('#00a2ae') },
       ],
-      selected: '', // 搜索选择
-      input: '',
-      //获取课程列表
-      //query: {
-      //    course_id: '',
-      // course_name: ''
-      //teacher: ''
-      // },
-      courselist: [],
-      total: 0, // 院系列表总数
-      currentPage: 1, // 当前页面
-      pageSize: 3, // 每页展示列表数
-      courselistShow: [],
-    }
+      courseSchedule: [], // 课程表数据
+      startTime: 1, // 课程表起始时间
+      endTime: 12, // 课程表结束时间
+      tableData: [], // 表格数据
+      week: 1, // 当前周数
+      dayList: ['周日','周一', '周二', '周三', '周四', '周五', '周六', ],
+      colorIndex:0
+    };
   },
-  created() {
-    this.getcourseName()
+  mounted() {
+    axios.get('/teacher/courseScheduleInfo').then(response => {
+      this.courseSchedule = response.data.data;
+      this.tableData = this.getTableData();
+    });
+    axios.get('/config/config').then(response => {
+      this.week = response.data.data.week;
+    });
   },
   methods: {
-    async getcourseName(select) {
-      var query = {}
-      if (select) {
-        if (this.selected === '课程号') {
-          query = { course_id: this.input }
-        } else if (this.selected === '学期') {
-          query = { semester: this.input }
-        } else if (this.selected === '教师号') query = { teacher: this.input }
-      } else query = {}
-      const { data: res } = await this.$http.get('teacher/open/search/', {
-        params: query,
-      })
-      if (res.status !== 200) return this.$message.error('获取课程列表失败')
-      this.courselist = res.data.Opens
-      this.total = res.data.total
-      this.currentPage = 1
-      var start = 0
-      var end = start + this.pageSize
-      this.courselistShow = res.data.Opens.slice(start, end)
-      console.log(res)
-    },
-    //教学大纲上传
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
-    },
-    handlePreview(file) {
-      console.log(file)
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
-          files.length + fileList.length
-        } 个文件`
-      )
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`)
-    },
-    handleSizeChange(pageSize) {
-      console.log(pageSize)
-      this.pageSize = pageSize
-      let start = 0
-      let end = start + pageSize
-      this.courselistShow = this.courselist.slice(start, end)
-    },
-    // 监听当前页面变化
-    handleCurrentChange(currentPage) {
-      this.currentPage = currentPage
-      let start = (currentPage - 1) * this.pageSize
-      let end = start + this.pageSize
-      this.courselistShow = this.courselist.slice(start, end)
-    },
-  },
-}
-</script>
+    getTableData() {
+      const data = [];
+      for (let i = this.startTime; i <= this.endTime; i++) {
+        const row = { time: i };
+        for (let j = 1; j <= 7; j++) {
+          
+          const course = this.courseSchedule.find(item => 
+            (1<<(j-1) & item.day)!== 0
+            && (1<<(this.week-1) & item.week) !== 0
+            && item.startTime <= i 
+            && item.endTime >= i
+          );
+          row[j] = course;
+        }
+        data.push(row);
+      }
 
-<style lang="less" scoped>
-.demo-input-label {
-  display: inline-block;
-  width: 130px;
+
+      for(let j=1; j<=7; j++) {
+
+        let lastCourse = null;
+        for(let i=this.startTime; i<=this.endTime; i++) {
+          const course = data[i-this.startTime][j];
+
+          if (course && lastCourse && course.day === lastCourse.day && course.courseInfo.id === lastCourse.courseInfo.id && course.location === lastCourse.location) {
+          
+            course = null;
+            data[i-this.startTime][j] = null;
+          }
+          if(course) {
+            lastCourse = course;
+          }
+        }
+      }
+
+      return data;
+    },
+    getRandomColor() {
+      // const colors = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
+      this.colorIndex = Math.floor(Math.random() * this.colors.length);
+      this.colorIndex = (this.colorIndex+1)% this.colors.length;
+      return this.colors[this.colorIndex].backgroundColor;
+    },
+    getFontColor(){
+      return this.colors[this.colorIndex].fontColor;
+    },
+    arraySpanMethod({ row, column, rowIndex, columnIndex }) {
+
+      //获取当前单元格的数据
+      const currentRow = this.tableData[rowIndex];
+      const current = currentRow[columnIndex];
+
+      if(!current){
+        return {
+          rowspan: 1,
+          colspan: 1,
+        };
+      }else{
+        return {
+          rowspan: current.endTime - current.startTime + 1,
+          colspan: 1,
+        };
+      }
+    }
+  }
+};
+</script>
+<style>
+.current-week {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .course-table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
 }
-.select {
-  width: 120px;
+
+.course-table th,
+.course-table td {
+  text-align: center;
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+.course-table th {
+  background-color: #f5f5f5;
+}
+
+.course-card {
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.course-card:hover {
+  background-color: #a6d8ef !important;
+}
+
+.course-name {
+  font-size: 17px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.course-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.teacher {
+  font-size: 14px;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.location {
+  font-size: 14px;
+  color: #ffffff;
 }
 </style>

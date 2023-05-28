@@ -1,176 +1,206 @@
 <template>
   <div>
-    <!-- 卡片视图 -->
-    <el-card class="box-card">
-      <!-- 学生课程查询视图 -->
-      <el-form :inline="true">
-        <el-form-item label="学年">
-          <el-input
-            placeholder="请输入学年"
-            v-model="searchQuery.semester_year"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="学期">
-          <el-select
-            placeholder="请选择学期"
-            v-model="searchQuery.semester_season"
-          >
-            <el-option
-              v-for="item in semesterMap"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="课程号">
-          <el-input
-            placeholder="请输入课程号"
-            v-model="searchQuery.course"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="教师号">
-          <el-input
-            placeholder="请输入教师号"
-            v-model="searchQuery.teacher"
-          ></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" icon="el-icon-search" @click="getScoreList()">查询课程</el-button>
-        </el-form-item>
-      </el-form>
 
-      <!-- 列表区域 -->
-      <el-table :data="scoreListShow" border stripe>
-        <!-- 自定义索引 -->
-        <el-table-column type="index"> </el-table-column>
-        <el-table-column prop="open.id" label="开课号"></el-table-column>
-        <el-table-column
-          prop="open.course.course_id"
-          label="课程号"
-        ></el-table-column>
-        <el-table-column
-          prop="open.course.course_name"
-          label="课程名"
-        ></el-table-column>
-        <el-table-column
-          prop="open.course_time"
-          label="上课时间"
-        ></el-table-column>
-        <el-table-column
-          prop="open.course.credit"
-          label="学分"
-        ></el-table-column>
-        <el-table-column
-          prop="open.teacher.user.user_id"
-          label="教师号"
-        ></el-table-column>
-        <el-table-column
-          prop="open.teacher.user.user_name"
-          label="教师名"
-        ></el-table-column>
-        <el-table-column prop="score" label="成绩"></el-table-column>
-      </el-table>
-      <!-- 分页栏 -->
-      <el-pagination
-        class="pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[5, 10, 15]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      >
-      </el-pagination>
+    <el-card class="box-card">
+    <div class="current-week">
+      <h1>当前第{{ week }}周</h1>
+    </div>
+    <el-table 
+      :span-method="arraySpanMethod"
+      :data="tableData" 
+      style="width: 100%"
+      border>
+      <el-table-column prop="time" label="节次"></el-table-column>
+      <el-table-column v-for="day in 7" :key="day" :label=" dayList[day%7]" >
+        <template slot-scope="{ row }">
+          <template v-if="row[day]">
+            <el-card class="course-card" :style="{ backgroundColor: getRandomColor() }">
+              <div class="course-name" :style="{ color: getFontColor()}">{{ row[day].courseInfo.name }}</div>
+                <div class="course-info">
+                  <div class="teacher">{{ row[day].teacher.name }}</div>
+                  <div class="location">{{ row[day].location }}</div>
+                </div>  
+            </el-card>
+          </template>
+        </template>
+      </el-table-column>
+    </el-table>
     </el-card>
   </div>
 </template>
 <script>
+import axios from 'axios';
+
+
+// 生成随机字体颜色
+function getRandomFontColor(bgColor) {
+      // 将背景颜色转换为 RGB 格式
+      let rgb = bgColor.match(/\d+/g);
+      let r = parseInt(rgb[0]);
+      let g = parseInt(rgb[1]);
+      let b = parseInt(rgb[2]);
+      // 根据亮度计算字体颜色
+      let brightness = (r * 299 + g * 587 + b * 114) / 1000;
+      return brightness >= 128 ? '#000' : '#fff';
+}
+
 export default {
   data() {
     return {
-      semesterMap: [
-        { value: '01', label: '春季' },
-        { value: '02', label: '夏季' },
-        { value: '03', label: '秋季' },
-        { value: '04', label: '冬季' },
+      colors: [
+        { backgroundColor: '#f56a00', fontColor: getRandomFontColor('#f56a00') },
+        { backgroundColor: '#7265e6', fontColor: getRandomFontColor('#7265e6') },
+        { backgroundColor: '#ffbf00', fontColor: getRandomFontColor('#ffbf00') },
+        { backgroundColor: '#00a2ae', fontColor: getRandomFontColor('#00a2ae') },
       ],
-      searchQuery: {
-        semester_year: '2020',
-        semester_season: '01',
-        course: '',
-        teacher: '',
-      },
-      scoreList: [], // 课程列表
-      scoreListShow: [], // 展示的课程列表
-      total: 0, // 课程列表总数
-      currentPage: 1, // 当前页面
-      pageSize: 5, // 每页展示列表数
-    }
+      courseSchedule: [], // 课程表数据
+      startTime: 1, // 课程表起始时间
+      endTime: 12, // 课程表结束时间
+      tableData: [], // 表格数据
+      week: 1, // 当前周数
+      dayList: ['周日','周一', '周二', '周三', '周四', '周五', '周六', ],
+      colorIndex:0
+    };
   },
-  created() {
-    this.getScoreList()
+  mounted() {
+    axios.get('/student/courseScheduleInfo').then(response => {
+      this.courseSchedule = response.data.data;
+      this.tableData = this.getTableData();
+    });
+    axios.get('/config/config').then(response => {
+      this.week = response.data.data.week;
+    });
   },
   methods: {
-    // 获取课程列表
-    async getScoreList() {
-      var query = {}
+    getTableData() {
+      const data = [];
+      for (let i = this.startTime; i <= this.endTime; i++) {
+        const row = { time: i };
+        for (let j = 1; j <= 7; j++) {
+          
+          const course = this.courseSchedule.find(item => 
+            (1<<(j-1) & item.day)!== 0
+            && (1<<(this.week-1) & item.week) !== 0
+            && item.startTime <= i 
+            && item.endTime >= i
+          );
+          row[j] = course;
+        }
+        data.push(row);
+      }
 
-      if (this.searchQuery.course != '') {
-        query.course = this.searchQuery.course
-      }
-      if (this.searchQuery.teacher != '') {
-        query.teacher = this.searchQuery.teacher
-      }
-      if (
-        this.searchQuery.semester_year != '' &&
-        this.searchQuery.semester_season != ''
-      ) {
-        query.semester =
-          this.searchQuery.semester_year + this.searchQuery.semester_season
-      }
-      const { data: res } = await this.$http.get('student/score/search/', {
-        params: query,
-      })
-      if (res.status !== 200) return this.$message.error('获取课程列表失败')
-      this.scoreList = res.Scores
-      this.total = res.total
 
-      this.currentPage = 1
-      var start = 0
-      var end = start + this.pageSize
-      this.scoreListShow = res.Scores.slice(start, end)
-      // console.log(res)
+      for(let j=1; j<=7; j++) {
+
+        let lastCourse = null;
+        for(let i=this.startTime; i<=this.endTime; i++) {
+          const course = data[i-this.startTime][j];
+
+          if (course && lastCourse && course.day === lastCourse.day && course.courseInfo.id === lastCourse.courseInfo.id && course.location === lastCourse.location) {
+          
+            course = null;
+            data[i-this.startTime][j] = null;
+          }
+          if(course) {
+            lastCourse = course;
+          }
+        }
+      }
+
+      return data;
     },
-    // 监听分页变化
-    handleSizeChange(pageSize) {
-      this.pageSize = pageSize
-      let start = 0
-      let end = start + pageSize
-      this.scoreListShow = this.scoreList.slice(start, end)
+    getRandomColor() {
+      // const colors = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
+      this.colorIndex = Math.floor(Math.random() * this.colors.length);
+      this.colorIndex = (this.colorIndex+1)% this.colors.length;
+      return this.colors[this.colorIndex].backgroundColor;
     },
-    // 监听当前页面变化
-    handleCurrentChange(currentPage) {
-      this.currentPage = currentPage
-      let start = (currentPage - 1) * this.pageSize
-      let end = start + this.pageSize
-      this.scoreListShow = this.scoreList.slice(start, end)
+    getFontColor(){
+      return this.colors[this.colorIndex].fontColor;
     },
-  },
-}
+    arraySpanMethod({ row, column, rowIndex, columnIndex }) {
+
+      //获取当前单元格的数据
+      const currentRow = this.tableData[rowIndex];
+      const current = currentRow[columnIndex];
+
+      if(!current){
+        return {
+          rowspan: 1,
+          colspan: 1,
+        };
+      }else{
+        return {
+          rowspan: current.endTime - current.startTime + 1,
+          colspan: 1,
+        };
+      }
+    }
+  }
+};
 </script>
-<style lang="less" scoped>
-.select {
-  width: 120px;
+<style>
+.current-week {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .course-table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
 }
-.pagination {
-  margin-top: 15px;
+
+.course-table th,
+.course-table td {
+  text-align: center;
+  padding: 8px;
+  border: 1px solid #ccc;
 }
-.text {
+
+.course-table th {
+  background-color: #f5f5f5;
+}
+
+.course-card {
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  box-sizing: border-box;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.course-card:hover {
+  background-color: #a6d8ef !important;
+}
+
+.course-name {
+  font-size: 17px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.course-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.teacher {
+  font-size: 14px;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.location {
+  font-size: 14px;
+  color: #ffffff;
 }
 </style>

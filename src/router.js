@@ -24,16 +24,18 @@ import Welcome_student from './components/student/Welcome.vue'
 import Courses_Info from './components/student/Courses.vue'
 import Select from './components/student/Select.vue'
 import Analysis from './components/student/Analysis.vue'
-import Info from './components/student/Info.vue'
+import StudentInfo from './components/student/Info.vue'
+
 
 
 // 教师页面
 import Home_teacher from './components/teacher/Home.vue'
 import Welcome_teacher from './components/teacher/Welcome.vue'
 import teachingschedule from './components/teacher/teachingschedule.vue'
-import select from './components/teacher/select.vue'
+import Score from './components/teacher/Score.vue'
 import dictionary from './components/teacher/dictionary.vue'
 import grade from './components/teacher/grade.vue'
+import TeacherInfo from './components/teacher/Info.vue'
 
 Vue.use(Router)
 
@@ -73,7 +75,7 @@ const router = new Router({
         { path: '/student/courses', component: Courses_Info },
         { path: '/student/select', component: Select },
         { path: '/student/Analysis', component: Analysis },
-        { path: '/student/Info', component: Info },
+        { path: '/student/Info', component: StudentInfo },
       ]
     },
     {
@@ -83,9 +85,10 @@ const router = new Router({
       children: [
           { path: '/teacher/welcome', component: Welcome_teacher },
           { path: '/teacher/teachingschedule', component: teachingschedule },
-          { path: '/teacher/select', component: select },
+          { path: '/teacher/score', component: Score },
           { path: '/teacher/dictionary', component: dictionary },
-          { path: '/teacher/grade', component: grade }
+          { path: '/teacher/grade', component: grade },
+          { path: '/teacher/Info', component: TeacherInfo },
       ]
     },
   ]

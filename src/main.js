@@ -25,10 +25,12 @@ axios.interceptors.request.use(config=>{
   return config
 })
 
+
+
+
+
 // 挂载到vue
 Vue.prototype.$http = axios
-
-
 Vue.config.productionTip = false
 
 new Vue({

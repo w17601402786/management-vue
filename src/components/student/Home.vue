@@ -65,7 +65,7 @@ export default {
         },
         {
           id: 2,
-          authName: '课程信息',
+          authName: '课程表',
           path: 'student/courses',
         },
         {

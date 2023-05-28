@@ -3,8 +3,7 @@
     <!-- 头部区域 -->
     <el-header>
       <div>
-        <img src="../../assets/system.png" alt="" />
-        <span>上海大学教务管理系统</span>
+        <span>教务管理系统-管理员</span>
       </div>
       <el-button type="info" @click="logout">退出</el-button>
     </el-header>
@@ -75,7 +74,7 @@ export default {
             {
               id: 1,
               authName: '管理员',
-              path: 'admins/',
+              path: 'users/',
               children: [],
             },
             {

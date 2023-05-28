@@ -6,7 +6,7 @@ import Login from './components/Login.vue'
 // 管理员页面
 import Home_admin from './components/admin/Home.vue'
 import Welcome_admin from './components/admin/Welcome.vue'
-import Admins from './components/admin/Admins.vue'
+import Users from './components/admin/Users.vue'
 import Students from './components/admin/Students.vue'
 import Teachers from './components/admin/Teachers.vue'
 import Colleges from './components/admin/Colleges.vue'
@@ -34,7 +34,7 @@ import Welcome_teacher from './components/teacher/Welcome.vue'
 import teachingschedule from './components/teacher/teachingschedule.vue'
 import Score from './components/teacher/Score.vue'
 import dictionary from './components/teacher/dictionary.vue'
-import grade from './components/teacher/grade.vue'
+import InputScore from './components/teacher/InputScore.vue'
 import TeacherInfo from './components/teacher/Info.vue'
 
 Vue.use(Router)
@@ -53,7 +53,7 @@ const router = new Router({
       redirect: '/admin/welcome',
       children: [
         { path: '/admin/welcome', component: Welcome_admin },
-        { path: '/admin/admins', component: Admins },
+        { path: '/admin/users', component: Users },
         { path: '/admin/students', component: Students },
         { path: '/admin/teachers', component: Teachers },
         { path: '/admin/colleges', component: Colleges },
@@ -87,7 +87,7 @@ const router = new Router({
           { path: '/teacher/teachingschedule', component: teachingschedule },
           { path: '/teacher/score', component: Score },
           { path: '/teacher/dictionary', component: dictionary },
-          { path: '/teacher/grade', component: grade },
+          { path: '/teacher/inputScore', component: InputScore },
           { path: '/teacher/Info', component: TeacherInfo },
       ]
     },

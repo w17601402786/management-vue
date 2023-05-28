@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     async fetchScoreData(keyword = '') {
-      const { data } = await this.$http.get(`/teacher/gradeInfo?courseId=&keyword=${keyword}`);
+      const { data } = await this.$http.get(`/teacher/gradeInfo?courseId=`);
 
       if (data.code === 200) {
         this.scoreList = data.data;

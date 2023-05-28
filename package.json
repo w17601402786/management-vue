@@ -12,6 +12,7 @@
     "@splinetool/runtime": "^0.9.343",
     "bootstrap": "^5.2.3",
     "core-js": "^2.6.5",
+    "dayjs": "^1.11.7",
     "echarts": "^5.1.1",
     "element-ui": "^2.15.13",
     "html2canvas": "^1.0.0-rc.7",

@@ -72,6 +72,10 @@ export default {
               id: 3,
               authName: '授课班成绩',
               path: 'teacher/score',
+            },{
+              id: 4,
+              authName: '成绩录入',
+              path: 'teacher/inputScore',
             }
             
 

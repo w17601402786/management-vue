@@ -43,7 +43,6 @@
               @click="saveNavState('/admin/' + subItem.path)"
             >
               <template slot="title">
-                <i class="el-icon-menu"></i>
                 <span>{{ subItem.authName }}</span>
               </template>
             </el-menu-item>
@@ -73,22 +72,10 @@ export default {
           children: [
             {
               id: 1,
-              authName: '管理员',
+              authName: '用户管理',
               path: 'users/',
               children: [],
-            },
-            {
-              id: 2,
-              authName: '学生',
-              path: 'students/',
-              children: [],
-            },
-            {
-              id: 3,
-              authName: '教师',
-              path: 'teachers/',
-              children: [],
-            },
+            }
           ],
         },
         {

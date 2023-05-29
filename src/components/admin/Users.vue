@@ -20,9 +20,9 @@
         <el-col :offset="10" :span="3">
           <el-button 
             type="primary" 
-            @click="
-            
-            addDialogVisible = true">添加用户</el-button>
+            @click="addDialogVisible = true">
+            添加用户
+          </el-button>
         </el-col>
       </el-row>
       <!-- 列表区域 -->
@@ -155,14 +155,13 @@
               type="primary"
               icon="el-icon-edit"
               size="mini"
-              @click="showEditDialog(scope.row.user_id)"
-            >
+              @click="showEditDialog(scope.row)">
             </el-button>
             <el-button
               type="danger"
               icon="el-icon-delete"
               size="mini"
-              @click="deleteAdmin(scope.row.user_id)"
+              @click="deleteUser(scope.row.id)"
             >
             </el-button>
           </template>
@@ -180,9 +179,15 @@
       ></el-pagination>
     </el-card>
     <add-user-dialog
-    @close="addDialogClosed"
+    @close="dialogClosed"
     :isVisible.sync="addDialogVisible">
     </add-user-dialog>
+    <edit-user-dialog
+    @close="dialogClosed"
+    :isVisible.sync="editDialogVisible"
+    :user.sync="editUser">
+    </edit-user-dialog>
+    
   </div>
  
 </template>
@@ -191,12 +196,14 @@
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn'; // 导入中文语言包
 import AddUserDialog from './components/AddUserDialog.vue';
+import EditUserDialog from './components/EditUserDialog.vue';
 
 
 export default {
 
   components: {
-    AddUserDialog
+    AddUserDialog,
+    EditUserDialog
   },
 
   data() {
@@ -204,7 +211,7 @@ export default {
 
       currentPage: 1,
       pageSize: 10,
-
+      
 
       searchText: '', // 搜索输入框
       userList: [], // 用户列表
@@ -212,6 +219,7 @@ export default {
       addDialogVisible: false,
       // 控制修改对话框显示与隐藏
       editDialogVisible: false,
+      editUser: {},
       params:{
         username: "",
         userType: "",
@@ -293,9 +301,11 @@ export default {
       for(let i = 0; i < this.userList.length; i++){
         if(this.userList[i].studentInfo !== null){
           //1998-12-31T16:00:00.000+00:00
+          if(this.userList[i].studentInfo.birthday !== null && this.userList[i].studentInfo.birthday !== "")
           this.userList[i].studentInfo.birthday = dayjs(this.userList[i].studentInfo.birthday).format("YYYY-MM-DD");
         }
         if(this.userList[i].teacherInfo !== null){
+          if(this.userList[i].teacherInfo.birthday !== null && this.userList[i].teacherInfo.birthday !== "")
           this.userList[i].teacherInfo.birthday = dayjs(this.userList[i].teacherInfo.birthday).format("YYYY-MM-DD");
         }
       }
@@ -315,10 +325,70 @@ export default {
       this.currentPage = newPage;
     },
     // 监听对话框关闭事件
-    addDialogClosed() {
+    dialogClosed() {
 
       this.addDialogVisible = false;
+      this.editDialogVisible = false;
       this.getUserList();
+    },
+    async deleteUser(id){
+
+
+      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+          try {
+            const {data: res} = await this.$http.get("/admin/users/delete?id=" + id);  
+            if(res.code != 200) this.$message.error(res.msg);
+            else{
+              this.$message.success("删除成功");
+              this.getUserList();
+            }
+          } catch (error) {
+            console.error(error);
+            this.$message.error("删除失败");
+          }
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+
+     
+    },
+    showEditDialog(row) {
+      this.editDialogVisible = true;
+      this.editUser = row;
+
+      if(this.editUser.studentInfo == null){
+          this.editUser.studentInfo = {
+            studentId: "", //如果是学生必填
+            name: "", //如果是学生必填
+            gender: "",
+            birthday: null,
+            major: "",
+            classId: "", //如果是学生必填
+            address: "",
+            phone: "",
+            note: ""
+          };
+        }
+        if(this.editUser.teacherInfo == null){
+          this.editUser.teacherInfo = {
+            teacherId: "", //如果是教师必填
+            name: "", //如果是教师必填
+            gender: "",
+            birthday: null,
+            faculty: "",
+            phone: "",
+          };
+        }
+      console.log(this.editUser);
+
+
     },
   },
 }

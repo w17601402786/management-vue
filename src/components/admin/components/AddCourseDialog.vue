@@ -1,7 +1,7 @@
 
 <template>
   <div>
-    <el-dialog :visible.sync="dialogVisible" :before-close="handleClose" title="编辑课程" width="68%">
+    <el-dialog :visible.sync="dialogVisible" :before-close="handleClose" title="添加课程" width="68%">
       <el-form :model="form" :rules="rules" ref="form" label-width="100px">
         <el-form-item label="课程号" prop="courseId">
           <el-input v-model="form.courseId" placeholder="请输入课程号"></el-input>

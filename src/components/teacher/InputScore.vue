@@ -12,7 +12,7 @@
         <el-col :span="7">
           <el-select
             @change="changeCourse"
-            v-model="course" 
+            v-model="course.courseId" 
             clearable
             auto-complete
             placeholder="请选择">
@@ -20,7 +20,7 @@
               v-for="item in courses"
               :key="item.courseId"
               :label="item.name"
-              :value="item">
+              :value="item.courseId">
               <span style="float: left">{{ item.name }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{ item.courseId }}</span>
             </el-option>
@@ -83,7 +83,10 @@ export default {
     return {
 
       courses: [],
-      course: null,
+      course: {
+        courseId: null,
+        name: null,
+      },
       studentlist: [],
       currentPage: 1,
       pageSize: 10,
@@ -115,6 +118,11 @@ export default {
 
     async getstudent() {
 
+
+      if(this.course == null || this.course.courseId == null) {
+        return;
+      }
+
       const { data: res } = await this.$http.get('teacher/getStudents?courseId=' + this.course.courseId)
       if (res.code !== 200) return this.$message.error('获取学生列表失败')
       this.studentlist = res.data
@@ -142,8 +150,8 @@ export default {
           //如果是字符串，转换成整数
           score: parseInt(this.studentlist[i].score),
         };
-        if(score === null) {
-          score = -1;
+        if(isNaN(score.score)) {
+          score.score = -1;
         }
         scoreList.push(score);
       }

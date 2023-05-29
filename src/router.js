@@ -7,7 +7,7 @@ import Login from './components/Login.vue'
 import Home_admin from './components/admin/Home.vue'
 import Welcome_admin from './components/admin/Welcome.vue'
 import Users from './components/admin/Users.vue'
-import Colleges from './components/admin/Colleges.vue'
+import Classes from './components/admin/Classes.vue'
 import Courses from './components/admin/Courses.vue'
 import Opens from './components/admin/Opens.vue'
 import Selections from './components/admin/Selections.vue'
@@ -52,7 +52,7 @@ const router = new Router({
       children: [
         { path: '/admin/welcome', component: Welcome_admin },
         { path: '/admin/users', component: Users },
-        { path: '/admin/colleges', component: Colleges },
+        { path: '/admin/classes', component: Classes },
         { path: '/admin/courses', component: Courses },
         { path: '/admin/opens', component: Opens },
         { path: '/admin/selections', component: Selections },

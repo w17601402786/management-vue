@@ -95,6 +95,12 @@ export default {
               path: 'classes/',
               children: [],
             },
+            {
+              id: 3,
+              authName: '成绩管理',
+              path: 'scores/',
+              children: [],
+            }
           ],
         },
         {

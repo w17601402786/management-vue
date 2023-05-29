@@ -85,20 +85,14 @@ export default {
           children: [
             {
               id: 1,
-              authName: '院系列表',
-              path: 'colleges/',
-              children: [],
-            },
-            {
-              id: 2,
-              authName: '课程列表',
+              authName: '课程管理',
               path: 'courses/',
               children: [],
             },
             {
-              id: 3,
-              authName: '开课列表',
-              path: 'opens/',
+              id: 2,
+              authName: '班级管理',
+              path: 'classes/',
               children: [],
             },
           ],

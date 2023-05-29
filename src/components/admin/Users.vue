@@ -295,7 +295,7 @@ export default {
 
 
       const{data: res} =  await this.$http.post("/admin/users/getUsers",this.params);
-      if(res.code !== 200) return this.$message.error("获取管理员列表失败");
+      if(res.code !== 200) return this.$message.error("获取用户列表失败");
       this.userList = res.data;
 
       for(let i = 0; i < this.userList.length; i++){

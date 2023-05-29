@@ -7,8 +7,6 @@ import Login from './components/Login.vue'
 import Home_admin from './components/admin/Home.vue'
 import Welcome_admin from './components/admin/Welcome.vue'
 import Users from './components/admin/Users.vue'
-import Students from './components/admin/Students.vue'
-import Teachers from './components/admin/Teachers.vue'
 import Colleges from './components/admin/Colleges.vue'
 import Courses from './components/admin/Courses.vue'
 import Opens from './components/admin/Opens.vue'
@@ -54,8 +52,6 @@ const router = new Router({
       children: [
         { path: '/admin/welcome', component: Welcome_admin },
         { path: '/admin/users', component: Users },
-        { path: '/admin/students', component: Students },
-        { path: '/admin/teachers', component: Teachers },
         { path: '/admin/colleges', component: Colleges },
         { path: '/admin/courses', component: Courses },
         { path: '/admin/opens', component: Opens },

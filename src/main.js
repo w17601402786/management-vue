@@ -7,11 +7,14 @@ import './plugins/element.js'
 import './assets/css/global.css'
 
 import axios from 'axios'
+import VueAxios from 'vue-axios'
+
 import Print from './utils/vue-print-nb/src'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
 
+Vue.use(VueAxios)
 Vue.use(ElementUI);
 Vue.use(Print)
 // 配置请求的根路径

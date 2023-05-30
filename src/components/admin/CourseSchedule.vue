@@ -62,13 +62,16 @@
                 </el-table-column>
             </el-table>
         </el-card>
-        <el-dialog :visible.sync="dialogVisible" title="排课详情" width="30%">
+        <el-dialog :visible.sync="dialogVisible" title="确认排课信息" width="30%">
             <div>
                 <div style="margin-bottom: 10px;">
                     <span style="font-weight: bold;">课程号：</span>{{ selectedCourse }}
                 </div>
                 <div style="margin-bottom: 10px;">
                     <span style="font-weight: bold;">教师号：</span>{{ selectedTeacher }}
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <span style="font-weight: bold;">班级号：</span>{{ selectedClass }}
                 </div>
                 <div style="margin-bottom: 10px;">
                     <span style="font-weight: bold;">场地名称：</span>{{ selectedLocation }}

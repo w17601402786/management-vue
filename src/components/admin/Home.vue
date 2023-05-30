@@ -103,10 +103,17 @@ export default {
             },
             {
               id: 4,
+              authName: '成绩分析',
+              path: 'scoresAnalysis/',
+              children: [],
+            },
+            {
+              id: 5,
               authName: '排课管理',
               path: 'courseSchedule/',
               children: [],
-            }
+            },
+           
           ],
         },
         // {

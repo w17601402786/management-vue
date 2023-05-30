@@ -14,6 +14,7 @@ import Selections from './components/admin/Selections.vue'
 import AddSelection from './components/admin/AddSelection.vue'
 import Scores from './components/admin/Scores.vue'
 import ScoresAnalysis from './components/admin/ScoresAnalysis.vue'
+import CourseSchedule from './components/admin/CourseSchedule.vue'
 
 
 // 学生页面
@@ -58,6 +59,7 @@ const router = new Router({
         { path: '/admin/selections', component: Selections },
         { path: '/admin/addSelection', component: AddSelection },
         { path: '/admin/scores', component: Scores },
+        { path: '/admin/courseSchedule', component: CourseSchedule },
         { path: '/admin/scoresAnalysis', component: ScoresAnalysis },
       ]
     },

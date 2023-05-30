@@ -100,40 +100,46 @@ export default {
               authName: '成绩管理',
               path: 'scores/',
               children: [],
+            },
+            {
+              id: 4,
+              authName: '排课管理',
+              path: 'courseSchedule/',
+              children: [],
             }
           ],
         },
-        {
-          id: 3,
-          authName: '教务管理',
-          path: null,
-          children: [
-            {
-              id: 0,
-              authName: '添加选课',
-              path: 'addSelection/',
-              children: [],
-            },
-            {
-              id: 1,
-              authName: '选课管理',
-              path: 'selections/',
-              children: [],
-            },
-            {
-              id: 2,
-              authName: '成绩管理',
-              path: 'scores/',
-              children: [],
-            },
-            {
-              id: 3,
-              authName: '成绩分析',
-              path: 'scoresAnalysis/',
-              children: [],
-            },
-          ],
-        },
+        // {
+        //   id: 3,
+        //   authName: '教务管理',
+        //   path: null,
+        //   children: [
+        //     {
+        //       id: 0,
+        //       authName: '添加选课',
+        //       path: 'addSelection/',
+        //       children: [],
+        //     },
+        //     {
+        //       id: 1,
+        //       authName: '选课管理',
+        //       path: 'selections/',
+        //       children: [],
+        //     },
+        //     {
+        //       id: 2,
+        //       authName: '成绩管理',
+        //       path: 'scores/',
+        //       children: [],
+        //     },
+        //     {
+        //       id: 3,
+        //       authName: '成绩分析',
+        //       path: 'scoresAnalysis/',
+        //       children: [],
+        //     },
+        //   ],
+        // },
       ],
       // 菜单图标
       iconsObj: {

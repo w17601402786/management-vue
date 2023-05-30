@@ -16,10 +16,10 @@
           <template v-if="row[day]">
             <el-card class="course-card" :style="{ backgroundColor: getRandomColor() }">
               <div class="course-name" :style="{ color: getFontColor()}">{{ row[day].courseInfo.name }}</div>
-                <div class="course-info">
-                  <div class="teacher">{{ row[day].teacher.name }}</div>
-                  <div class="location">{{ row[day].location }}</div>
-                </div>  
+              <div class="course-info">
+                <div class="teacher">{{ row[day].teacher.name }}</div>
+                <div class="location">{{ row[day].location }}</div>
+              </div>  
             </el-card>
           </template>
         </template>

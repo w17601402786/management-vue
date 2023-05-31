@@ -19,7 +19,7 @@
       <el-drawer
         title="AI成绩分析"
         :visible.sync="drawer"
-        size="30%">
+        size="45%">
         <ai-analysis :score-list="scoreList"></ai-analysis>
       </el-drawer>
 
